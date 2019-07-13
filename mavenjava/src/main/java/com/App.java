@@ -1,12 +1,12 @@
 package com;
 
-import java.io.*;
-import java.net.Socket;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  * Hello world!
  */
-public class App implements InterfaceDemo{
+public class App implements InterfaceDemo {
     @Override
     public void SayInterfaceName() {
         System.out.println(interfaceName);
@@ -108,39 +108,61 @@ public class App implements InterfaceDemo{
 //            e.printStackTrace();
 //        }
 
-//        客户端
-        String serverName = "localhost";
-        int port = 8888;
+////        客户端
+//        String serverName = "localhost";
+//        int port = 8888;
+//        try {
+//            System.out.println("连接到主机：" + serverName + " ，端口号：" + port);
+//            Socket socket = new Socket(serverName, port);
+//            System.out.println("远程主机地址：" + socket.getRemoteSocketAddress());
+//            //获取输出流
+//            OutputStream out = socket.getOutputStream();
+//            DataOutputStream dataOut = new DataOutputStream(out);
+//            dataOut.writeUTF("hello from "+socket.getRemoteSocketAddress());
+//
+////            获取输入流
+//            InputStream in = socket.getInputStream();
+//            DataInputStream dataIn=new DataInputStream(in);
+//            System.out.println("后去服务器返回数据："+dataIn.readUTF());
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        RunnableTest r1 = new RunnableTest("Thread-1");
+//        r1.start();
+//        RunnableTest r2 = new RunnableTest("Thread-2");
+//        r2.start();
+//        Thread1 t=new Thread1("Thread1");
+//        t.start();
+//        Thread1 t1=new Thread1("Thread2");
+//        t1.start();
+        CallableThread ct = new CallableThread();
+        FutureTask<Integer> ft = new FutureTask<Integer>(ct);
+        for (int i = 0; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " 的循环变量i的值" + i);
+            if (i == 20) {
+                new Thread(ft, "有返回值的线程").start();
+            }
+        }
         try {
-            System.out.println("连接到主机：" + serverName + " ，端口号：" + port);
-            Socket socket = new Socket(serverName, port);
-            System.out.println("远程主机地址：" + socket.getRemoteSocketAddress());
-            //获取输出流
-            OutputStream out = socket.getOutputStream();
-            DataOutputStream dataOut = new DataOutputStream(out);
-            dataOut.writeUTF("hello from "+socket.getRemoteSocketAddress());
-
-//            获取输入流
-            InputStream in = socket.getInputStream();
-            DataInputStream dataIn=new DataInputStream(in);
-            System.out.println("后去服务器返回数据："+dataIn.readUTF());
-            socket.close();
-        } catch (IOException e) {
+            System.out.println("子线程的返回值:" + ft.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
 //
 
-    public static void show(Animal a) {
-        a.eat();
-        if (a instanceof Cat) {
-            ((Cat) a).work();
-        } else if (a instanceof Dog) {
-            ((Dog) a).work();
-        }
-    }
+//    public static void show(Animal a) {
+//        a.eat();
+//        if (a instanceof Cat) {
+//            ((Cat) a).work();
+//        } else if (a instanceof Dog) {
+//            ((Dog) a).work();
+//        }
+//    }
 
 //    public static void deleteFolder(File f) {
 //        File[] files = f.listFiles();//获取所有文件和文件夹
