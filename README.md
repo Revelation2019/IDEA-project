@@ -1,0 +1,1 @@
+factoryModel是一个简单工厂模式例子。
